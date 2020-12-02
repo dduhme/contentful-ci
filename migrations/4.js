@@ -12,4 +12,6 @@ module.exports = function runMigration(migration) {
         name: 'Lastname',
         type: 'Symbol'
     });
+
+    author.displayField('lastname');
   };
