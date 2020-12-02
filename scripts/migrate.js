@@ -194,8 +194,8 @@
         }
 
         try {
-            environmentAlias = await space.getEnvironmentAlias('master');
-            console.log(`Environment alias ${environmentAlias} found.`);
+            environmentAliases = await space.getEnvironmentAliases();
+            console.log(`Environment aliases: ${environmentAliases}`);
         } catch (e) {
             console.log("Environment alias not found");
         }
