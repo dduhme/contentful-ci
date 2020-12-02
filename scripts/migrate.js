@@ -178,10 +178,6 @@
             console.log(`Running on ${ENVIRONMENT_INPUT}.`);
             console.log(`Updating ${ENVIRONMENT_INPUT} alias.`);
 
-            await space.getEnvironmentAliases()
-                .then((response) => console.log(reponse.items))
-                .catch(console.error);
-
             /*
             await space.getEnvironmentAlias(ENVIRONMENT_INPUT)
                 .then((alias) => {
@@ -195,6 +191,13 @@
         } else {
             console.log("Running on feature branch");
             console.log("No alias changes required");
+        }
+
+        try {
+            environmentAlias = await space.getEnvironmentAlias('master');
+            console.log(`Environment alias ${environmentAlias} found.`);
+        } catch (e) {
+            console.log("Environment alias not found");
         }
 
         console.log("All done!");
