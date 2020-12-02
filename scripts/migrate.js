@@ -173,12 +173,11 @@
         }
 
         // ---------------------------------------------------------------------------
-        console.log("Checking if we need to an alias");
+        console.log("Checking if we need to update an alias");
         if (ENVIRONMENT_INPUT == "master" || ENVIRONMENT_INPUT == "staging" || ENVIRONMENT_INPUT == "qa") {
             console.log(`Running on ${ENVIRONMENT_INPUT}.`);
             console.log(`Updating ${ENVIRONMENT_INPUT} alias.`);
-            await space
-                .getEnvironmentAlias(ENVIRONMENT_INPUT)
+            await space.getEnvironmentAlias(ENVIRONMENT_INPUT)
                 .then((alias) => {
                     alias.environment.sys.id = ENVIRONMENT_ID;
                     return alias.update();
