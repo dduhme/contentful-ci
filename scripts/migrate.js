@@ -188,16 +188,10 @@
                 .catch(console.error);
             console.log(`${ENVIRONMENT_INPUT} alias updated.`);
             */
+           
         } else {
             console.log("Running on feature branch");
             console.log("No alias changes required");
-        }
-
-        try {
-            environmentAliases = await space.getEnvironmentAliases();
-            console.log(`Environment aliases: ${environmentAliases}`);
-        } catch (e) {
-            console.log(e);
         }
 
         console.log("All done!");
