@@ -31,7 +31,7 @@
         console.log(`SPACE_ID: ${SPACE_ID}`);
 
         // ---------------------------------------------------------------------------
-        if (ENVIRONMENT_INPUT == "master" || ENVIRONMENT_INPUT == "development") {
+        if (ENVIRONMENT_INPUT == "master") {
             console.log(`Running on ${ENVIRONMENT_INPUT}.`);
             ENVIRONMENT_ID = `${ENVIRONMENT_INPUT}-`.concat(getStringDate());
         } else {
@@ -46,7 +46,7 @@
 
         try {
             environment = await space.getEnvironment(ENVIRONMENT_ID);
-            if (ENVIRONMENT_ID != "master" || ENVIRONMENT_ID != "development") {
+            if (ENVIRONMENT_ID != "master") {
                 await environment.delete();
                 console.log("Environment deleted");
             }
@@ -55,7 +55,7 @@
         }
 
         // ---------------------------------------------------------------------------
-        if (ENVIRONMENT_ID != "master" || ENVIRONMENT_ID != "development") {
+        if (ENVIRONMENT_ID != "master") {
             console.log(`Creating environment ${ENVIRONMENT_ID}`);
             environment = await space.createEnvironmentWithId(ENVIRONMENT_ID, {
                 name: ENVIRONMENT_ID,
