@@ -54,6 +54,11 @@ jobs:
             - store_artifacts:
                   path: test-reports
                   destination: test-reports
+            - run:
+                    name: Executing migrations in development environment
+                    command: |
+                        . venv/bin/activate
+                        scripts/migrate.js $SPACE_ID $CIRCLE_BRANCH $MANAGEMENT_API_KEY
 
     deploy:
         docker:

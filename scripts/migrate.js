@@ -36,7 +36,7 @@
             ENVIRONMENT_ID = `${ENVIRONMENT_INPUT}-`.concat(getStringDate());
         } else if (ENVIRONMENT_INPUT == "development") {
             console.log(`Running on ${ENVIRONMENT_INPUT}.`);
-            ENVIRONMENT_ID = `TEST-${ENVIRONMENT_INPUT}`;
+            ENVIRONMENT_ID = `CI_${ENVIRONMENT_INPUT}`;
         } 
         else {
             console.log(`Running on feature branch`);
@@ -60,10 +60,16 @@
 
         // ---------------------------------------------------------------------------
         if (ENVIRONMENT_ID != "master") {
-            console.log(`Creating environment ${ENVIRONMENT_ID}`);
-            environment = await space.createEnvironmentWithId(ENVIRONMENT_ID, {
-                name: ENVIRONMENT_ID,
-            });
+            if (ENVIRONMENT_INPUT == "development") {
+                console.log(`Using environment ${ENVIRONMENT_INPUT}`);
+                environment = await space.getEnvironment(ENVIRONMENT_INPUT);
+                ENVIRONMENT_ID = ENVIRONMENT_INPUT; 
+            } else {
+                console.log(`Creating environment ${ENVIRONMENT_ID}`);
+                environment = await space.createEnvironmentWithId(ENVIRONMENT_ID, {
+                    name: ENVIRONMENT_ID,
+                });
+            }
         }
         // ---------------------------------------------------------------------------
         const DELAY = 3000;
