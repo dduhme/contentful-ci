@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 (async () => {
     try {
         const { promisify } = require("util");
@@ -29,17 +27,15 @@
         console.error(e);
         process.exit(1);
     }
-})();
-
-function getStringDate() {
+  })();
+  
+  
+  
+  function getStringDate(){
     var d = new Date();
-    function pad(n) {
-        return n < 10 ? "0" + n : n;
-    }
-    return (
-        d.toISOString().substring(0, 10) +
-        "-" +
-        pad(d.getUTCHours()) +
-        pad(d.getUTCMinutes())
-    );
-}
+    function pad(n){return n<10 ? '0'+n : n}
+    return d.toISOString().substring(0, 10)
+    + '-'
+    + pad(d.getUTCHours())
+    + pad(d.getUTCMinutes())
+  }
