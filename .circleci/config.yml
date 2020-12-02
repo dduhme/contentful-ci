@@ -1,21 +1,110 @@
-version: 2.1
-
-orbs:
-  python: circleci/python@0.2.1
-
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2
 jobs:
-  build-and-test:
-    executor: python/default
-    steps:
-      - checkout
-      - python/load-cache
-      - python/install-deps
-      - python/save-cache
-      - run:
-          command: ./manage.py test
-          name: Test
+    build:
+        docker:
+            # specify the version you desire here
+            # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
+            - image: circleci/python:3.6.5-node
 
+            # Specify service dependencies here if necessary
+            # CircleCI maintains a library of pre-built images
+            # documented at https://circleci.com/docs/2.0/circleci-images/
+            # - image: circleci/postgres:9.4
+
+        working_directory: ~/migration-env-demo
+
+        steps:
+            - checkout
+
+            # Download and cache dependencies
+            - restore_cache:
+                  keys:
+                      - v1-dependencies-{{ checksum "requirements.txt" }}-{{ checksum "package.json" }}
+                      # fallback to using the latest cache if no exact match is found
+                      - v1-dependencies-
+
+            - run:
+                  name: install dependencies
+                  command: |
+                      python3 -m venv venv
+                      . venv/bin/activate
+                      pip install -r requirements.txt
+                      npm install
+            - save_cache:
+                  paths:
+                      - ./venv
+                      - node_modules
+                  key: v1-dependencies-{{ checksum "requirements.txt" }}-{{ checksum "package.json" }}
+
+            - run:
+                  name: Preparing environment for testing
+                  command: |
+                      . venv/bin/activate
+                      scripts/migrate.js $SPACE_ID "CI_$CIRCLE_BRANCH" $MANAGEMENT_API_KEY
+            # run tests!
+            - run:
+                  name: run tests
+                  command: |
+                      . venv/bin/activate
+                      pytest --environment-id="CI_$CIRCLE_BRANCH"
+            - store_artifacts:
+                  path: test-reports
+                  destination: test-reports
+
+    deploy:
+        docker:
+            - image: circleci/python:3.6.5-node-browsers
+        environment:
+            # Update HEROKU_APP with your application Name.
+            HEROKU_APP_NAME: "migration-env-demo"
+        steps:
+            - checkout
+
+            # Download and cache dependencies
+            - restore_cache:
+                  keys:
+                      - v1-dependencies-{{ checksum "package.json" }}
+                      # fallback to using the latest cache if no exact match is found
+                      - v1-dependencies-
+
+            - run:
+                  name: install dependencies
+                  command: |
+                      npm install
+            - save_cache:
+                  paths:
+                      - node_modules
+                  key: v1-dependencies-{{ checksum "package.json" }}
+
+            - run:
+                  name: Creating new environment and setting alias
+                  command: |
+                      scripts/migrate.js $SPACE_ID $CIRCLE_BRANCH $MANAGEMENT_API_KEY
+            - run:
+                  name: setup Heroku
+                  command: bash .circleci/setup-heroku.sh
+
+            - deploy:
+                  name: Deploying to Heroku
+                  command: |
+                      if [ "$CIRCLE_BRANCH" == "master" ] || [ "$CIRCLE_BRANCH" == "staging" ] || [ "$CIRCLE_BRANCH" == "qa"]; then
+                        git push heroku $CIRCLE_BRANCH
+                      fi
 workflows:
-  main:
-    jobs:
-      - build-and-test
+    version: 2
+    build-deploy:
+        jobs:
+            - build
+            - deploy:
+                  requires:
+                      - build
+                  filters:
+                      branches:
+                          only:
+                              - master
+                              - staging
+                              - qa
