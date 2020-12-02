@@ -31,13 +31,13 @@
         console.log(`SPACE_ID: ${SPACE_ID}`);
 
         // ---------------------------------------------------------------------------
-        if (ENVIRONMENT_INPUT == "master" || ENVIRONMENT_INPUT == "staging" || ENVIRONMENT_INPUT == "qa") {
+        if (ENVIRONMENT_INPUT == "master" || ENVIRONMENT_INPUT == "development") {
             console.log(`Running on ${ENVIRONMENT_INPUT}.`);
             ENVIRONMENT_ID = `${ENVIRONMENT_INPUT}-`.concat(getStringDate());
         } else {
-            console.log("Running on feature branch");
+            console.log(`Running on feature branch`);
             ENVIRONMENT_ID = ENVIRONMENT_INPUT;
-        }
+        } 
         console.log(`ENVIRONMENT_ID: ${ENVIRONMENT_ID}`);
 
         // ---------------------------------------------------------------------------
@@ -46,7 +46,7 @@
 
         try {
             environment = await space.getEnvironment(ENVIRONMENT_ID);
-            if (ENVIRONMENT_ID != "master" || ENVIRONMENT_ID != "staging" || ENVIRONMENT_ID != "qa") {
+            if (ENVIRONMENT_ID != "master" || ENVIRONMENT_ID != "development") {
                 await environment.delete();
                 console.log("Environment deleted");
             }
@@ -55,7 +55,7 @@
         }
 
         // ---------------------------------------------------------------------------
-        if (ENVIRONMENT_ID != "master" || ENVIRONMENT_ID != "staging" || ENVIRONMENT_ID != "qa") {
+        if (ENVIRONMENT_ID != "master" || ENVIRONMENT_ID != "development") {
             console.log(`Creating environment ${ENVIRONMENT_ID}`);
             environment = await space.createEnvironmentWithId(ENVIRONMENT_ID, {
                 name: ENVIRONMENT_ID,
@@ -69,8 +69,7 @@
         console.log("Waiting for environment processing...");
 
         while (count < MAX_NUMBER_OF_TRIES) {
-            const status = (await space.getEnvironment(environment.sys.id)).sys.status
-                .sys.id;
+            const status = (await space.getEnvironment(environment.sys.id)).sys.status.sys.id;
 
             if (status === "ready" || status === "failed") {
                 if (status === "ready") {
@@ -174,7 +173,7 @@
 
         // ---------------------------------------------------------------------------
         console.log("Checking if we need to update an alias");
-        if (ENVIRONMENT_INPUT == "master" || ENVIRONMENT_INPUT == "staging" || ENVIRONMENT_INPUT == "qa") {
+        if (ENVIRONMENT_INPUT == "master") {
             console.log(`Running on ${ENVIRONMENT_INPUT}.`);
             console.log(`Updating ${ENVIRONMENT_INPUT} alias.`);
 
