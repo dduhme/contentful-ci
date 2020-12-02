@@ -1,6 +1,6 @@
 module.exports = function runMigration(migration) {
     const author = migration.createContentType('author', {
-        name: 'name'
+        name: 'author'
     });
 
     author.createField('name', {
