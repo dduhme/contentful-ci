@@ -1,5 +1,7 @@
 module.exports = function runMigration(migration) {
-    const author = migration.createContentType('author');
+    const author = migration.createContentType('author', {
+        name: 'name'
+    });
 
     author.createField('name', {
         name: 'Name',
@@ -7,7 +9,7 @@ module.exports = function runMigration(migration) {
     });
     author.createField('bio', {
         name: 'Biography',
-        type: 'RichText'
+        type: 'Text'
     });
 
     author.displayField('name');
