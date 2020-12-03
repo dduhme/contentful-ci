@@ -44,7 +44,7 @@ jobs:
                   name: Preparing environment for testing
                   command: |
                       . venv/bin/activate
-                      scripts/migrate.js $SPACE_ID "CI_$CIRCLE_BRANCH" $MANAGEMENT_API_KEY
+                      scripts/migrate2.js $SPACE_ID "CI_$CIRCLE_BRANCH" $MANAGEMENT_API_KEY
             # run tests!
             - run:
                   name: run tests
@@ -58,7 +58,7 @@ jobs:
                     name: Executing migrations in development environment
                     command: |
                         . venv/bin/activate
-                        scripts/migrate.js $SPACE_ID $CIRCLE_BRANCH $MANAGEMENT_API_KEY
+                        scripts/migrate2.js $SPACE_ID $CIRCLE_BRANCH $MANAGEMENT_API_KEY
 
     deploy:
         docker:
@@ -88,7 +88,7 @@ jobs:
             - run:
                   name: Creating new environment and setting alias
                   command: |
-                      scripts/migrate.js $SPACE_ID $CIRCLE_BRANCH $MANAGEMENT_API_KEY
+                      scripts/migrate2.js $SPACE_ID $CIRCLE_BRANCH $MANAGEMENT_API_KEY
             - run:
                   name: setup Heroku
                   command: bash .circleci/setup-heroku.sh
