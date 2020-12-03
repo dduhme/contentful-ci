@@ -46,19 +46,19 @@ jobs:
                       . venv/bin/activate
                       scripts/migrate2.js $SPACE_ID "CI_$CIRCLE_BRANCH" $MANAGEMENT_API_KEY
             # run tests!
-            - run:
-                  name: run tests
-                  command: |
-                      . venv/bin/activate
-                      pytest --environment-id="CI_$CIRCLE_BRANCH"
-            - store_artifacts:
-                  path: test-reports
-                  destination: test-reports
-            - run:
-                    name: Executing migrations in development environment
-                    command: |
-                        . venv/bin/activate
-                        scripts/migrate2.js $SPACE_ID $CIRCLE_BRANCH $MANAGEMENT_API_KEY
+            #- run:
+            #     name: run tests
+            #      command: |
+            #          . venv/bin/activate
+            #          pytest --environment-id="CI_$CIRCLE_BRANCH"
+            #- store_artifacts:
+            #      path: test-reports
+            #      destination: test-reports
+            #- run:
+            #        name: Executing migrations in development environment
+            #        command: |
+            #            . venv/bin/activate
+            #            scripts/migrate2.js $SPACE_ID $CIRCLE_BRANCH $MANAGEMENT_API_KEY
 
     deploy:
         docker:
