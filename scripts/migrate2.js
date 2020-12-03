@@ -26,6 +26,8 @@
         console.log("Running with the following configuration");
         console.log(`SPACE_ID: ${SPACE_ID}`);
 
+        
+
     } catch (e) {
         console.error(e);
         process.exit(1);
